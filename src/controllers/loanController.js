@@ -33,39 +33,45 @@ exports.createLoan = async (req, res) => {
 };
 
 
-// Obtiene todos los contratos que tienen un lender, excluyendo los del usuario actual
+// Obtiene todos los contratos que tienen un lender
 exports.getLoansByLender = async (req, res) => {
     const userWalletAddress = req.query.walletAddress;
-  
+
     if (!userWalletAddress) {
-      return res.status(400).json({ message: 'La dirección de la billetera es necesaria' });
+        return res.status(400).json({ message: 'La dirección de la billetera es necesaria' });
     }
-  
+
     try {
-      const loans = await Loan.find({ lender: { $ne: userWalletAddress } });
-      res.status(200).json(loans);
+        // Conectar a la base de datos de MongoDB
+        const database = client.db('microfinance-P2P');
+        const loansCollection = database.collection('loans');
+        const loans = await loansCollection.find({ lender: { $ne: null } }).toArray();
+        res.status(200).json(loans);
     } catch (error) {
-      res.status(500).json({ message: 'Error al obtener los préstamos', error: error.message });
+        res.status(500).json({ message: 'Error al obtener los préstamos', error: error.message });
     }
-  };
-  
+};
+
 
 // Obtiene todos los contratos que tienen un borrower, excluyendo los del usuario actual
 exports.getLoansByBorrower = async (req, res) => {
     const userWalletAddress = req.query.walletAddress;
-  
+
     if (!userWalletAddress) {
-      return res.status(400).json({ message: 'La dirección de la billetera es necesaria' });
+        return res.status(400).json({ message: 'La dirección de la billetera es necesaria' });
     }
-  
+
     try {
-      const loans = await Loan.find({ borrower: { $ne: userWalletAddress } });
-      res.status(200).json(loans);
+        // Conectar a la base de datos de MongoDB
+        const database = client.db('microfinance-P2P');
+        const loansCollection = database.collection('loans');
+        const loans = await loansCollection.find({ borrower: { $ne: null } }).toArray();
+        res.status(200).json(loans);
     } catch (error) {
-      res.status(500).json({ message: 'Error al obtener los préstamos', error: error.message });
+        res.status(500).json({ message: 'Error al obtener los préstamos', error: error.message });
     }
-  };
-  
+};
+
 
 // Obtener un préstamo por ID
 exports.getLoanById = async (req, res) => {
