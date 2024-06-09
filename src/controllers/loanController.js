@@ -17,7 +17,7 @@ exports.createLoan = async (req, res) => {
             interestRate: loanData.interestRate,
             duration: loanData.duration,
             status: 'Pending',
-            lender: loanData.lender,
+            lender: loanData.lender || null,
             borrower: loanData.borrower || null,
             isFunded: loanData.isFunded || false,
             isRepaid: loanData.isRepaid || false,
