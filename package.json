@@ -7,6 +7,7 @@
     "firebase": "^10.12.2",
     "firebase-admin": "^12.1.1",
     "mongodb": "^6.7.0",
+    "moongose": "^1.0.0",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
