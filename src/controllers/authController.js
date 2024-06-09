@@ -55,12 +55,21 @@ exports.login = async (req, res) => {
     // Generar un token personalizado usando Firebase Admin SDK
     const customToken = await admin.auth().createCustomToken(user.uid);
 
+    // Conectar a la base de datos de MongoDB y obtener la información del usuario
+    const database = client.db('microfinance-P2P');
+    const usersCollection = database.collection('users');
+    const mongoUser = await usersCollection.findOne({ uid: user.uid });
+
+    if (!mongoUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
     res.json({
       success: true,
       token: customToken,
       uid: user.uid,
       email: user.email,
-      walletAddress: user.walletAddress
+      walletAddress: mongoUser.walletAddress
     });
   } catch (error) {
     console.error('Error logging in:', error);
