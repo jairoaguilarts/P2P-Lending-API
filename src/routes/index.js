@@ -8,8 +8,8 @@ router.post('/register', authController.registerUser);
 router.post('/login', authController.login);
 
 router.post('/createLoan', loanController.createLoan);
-router.get('/getLoans', loanController.getLoans);
-router.get('/getLoan/:id', loanController.getLoanById);
+router.get('/getLoansByLender', loanController.getLoansByLender);
+router.get('/getLoansByBorrower', loanController.getLoansByBorrower);
 
 router.get('/', homeController.home);
 

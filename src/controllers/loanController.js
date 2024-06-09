@@ -33,15 +33,39 @@ exports.createLoan = async (req, res) => {
 };
 
 
-// Obtener todos los préstamos
-exports.getLoans = async (req, res) => {
-    try {
-        const loans = await Loan.find();
-        res.status(200).send(loans);
-    } catch (error) {
-        res.status(400).send(error);
+// Obtiene todos los contratos que tienen un lender, excluyendo los del usuario actual
+exports.getLoansByLender = async (req, res) => {
+    const userWalletAddress = req.query.walletAddress;
+  
+    if (!userWalletAddress) {
+      return res.status(400).json({ message: 'La dirección de la billetera es necesaria' });
     }
-};
+  
+    try {
+      const loans = await Loan.find({ lender: { $ne: userWalletAddress } });
+      res.status(200).json(loans);
+    } catch (error) {
+      res.status(500).json({ message: 'Error al obtener los préstamos', error: error.message });
+    }
+  };
+  
+
+// Obtiene todos los contratos que tienen un borrower, excluyendo los del usuario actual
+exports.getLoansByBorrower = async (req, res) => {
+    const userWalletAddress = req.query.walletAddress;
+  
+    if (!userWalletAddress) {
+      return res.status(400).json({ message: 'La dirección de la billetera es necesaria' });
+    }
+  
+    try {
+      const loans = await Loan.find({ borrower: { $ne: userWalletAddress } });
+      res.status(200).json(loans);
+    } catch (error) {
+      res.status(500).json({ message: 'Error al obtener los préstamos', error: error.message });
+    }
+  };
+  
 
 // Obtener un préstamo por ID
 exports.getLoanById = async (req, res) => {

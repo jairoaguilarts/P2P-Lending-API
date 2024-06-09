@@ -59,7 +59,8 @@ exports.login = async (req, res) => {
       success: true,
       token: customToken,
       uid: user.uid,
-      email: user.email
+      email: user.email,
+      walletAddress: user.walletAddress
     });
   } catch (error) {
     console.error('Error logging in:', error);
