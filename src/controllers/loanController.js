@@ -1,17 +1,37 @@
-const Loan = require('../models/loan');
+const { client } = require('../config/db');
 
-// Crear un nuevo préstamo
 exports.createLoan = async (req, res) => {
     const loanData = req.body;
 
     try {
-        const newLoan = new Loan(loanData);
-        await newLoan.save();
+        // Conectar a la base de datos de MongoDB
+        const database = client.db('microfinance-P2P');
+        const loansCollection = database.collection('loans');
+
+        const lastLoan = await loansCollection.find().sort({ loanID: -1 }).limit(1).toArray();
+
+        const newLoanID = lastLoan.length > 0 ? lastLoan[0].loanID + 1 : 0;
+        const newLoan = {
+            loanID: newLoanID,
+            amount: loanData.amount,
+            interestRate: loanData.interestRate,
+            duration: loanData.duration,
+            status: 'Pending',
+            lender: loanData.lender,
+            borrower: loanData.borrower || null,
+            isFunded: loanData.isFunded || false,
+            isRepaid: loanData.isRepaid || false,
+            createdAt: new Date()
+        };
+
+        await loansCollection.insertOne(newLoan);
+
         res.status(201).send(newLoan);
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).send({ message: 'Error creating loan offer', error: error.message });
     }
 };
+
 
 // Obtener todos los préstamos
 exports.getLoans = async (req, res) => {
