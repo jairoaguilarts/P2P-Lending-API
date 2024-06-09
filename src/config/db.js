@@ -9,9 +9,8 @@ const client = new MongoClient(uri, {
   },
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  ssl: true,
-  sslValidate: true,
-  tlsAllowInvalidCertificates: false,
+  tls: true, 
+  tlsAllowInvalidCertificates: false, 
 });
 
 async function connectToDatabase() {
