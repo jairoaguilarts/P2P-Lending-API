@@ -32,6 +32,25 @@ exports.createLoan = async (req, res) => {
     }
 };
 
+exports.deleteLoan = async (req, res) => {
+    const loanID = parseInt(req.params.id, 10);
+
+    try {
+        // Conectar a la base de datos de MongoDB
+        const database = client.db('microfinance-P2P');
+        const loansCollection = database.collection('loans');
+
+        const result = await loansCollection.deleteOne({ loanID: loanID });
+
+        if (result.deletedCount === 1) {
+            res.status(200).send({ message: 'Loan offer deleted successfully' });
+        } else {
+            res.status(404).send({ message: 'Loan offer not found' });
+        }
+    } catch (error) {
+        res.status(400).send({ message: 'Error deleting loan offer', error: error.message });
+    }
+};
 
 // Obtiene todos los contratos que tienen un lender
 exports.getLoansByLender = async (req, res) => {
