@@ -71,7 +71,6 @@ exports.getLoansByLender = async (req, res) => {
     }
 };
 
-
 // Obtiene todos los contratos que tienen un borrower, excluyendo los del usuario actual
 exports.getLoansByBorrower = async (req, res) => {
     const userWalletAddress = req.query.walletAddress;
@@ -91,15 +90,47 @@ exports.getLoansByBorrower = async (req, res) => {
     }
 };
 
-
 // Obtener un préstamo por ID
 exports.getLoanById = async (req, res) => {
     try {
-        const loan = await Loan.findById(req.params.id);
+        // Conectar a la base de datos de MongoDB
+        const database = client.db('microfinance-P2P');
+        const loansCollection = database.collection('loans');
+        const loan = await loansCollection.findOne(req.params.loanID);
         if (!loan) {
             return res.status(404).send('Loan not found');
         }
         res.status(200).send(loan);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+};
+
+exports.getLender = async (req, res) => {
+    try {
+        // Conectar a la base de datos de MongoDB
+        const database = client.db('microfinance-P2P');
+        const usersCollection = database.collection('users');
+        const user = await usersCollection.findOne({ walletAddress: req.params.walletAddress });
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+        res.status(200).send(user);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+};
+
+exports.getBorrower = async (req, res) => {
+    try {
+        // Conectar a la base de datos de MongoDB
+        const database = client.db('microfinance-P2P');
+        const usersCollection = database.collection('users');
+        const user = await usersCollection.findOne({ walletAddress: req.params.walletAddress });
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+        res.status(200).send(user);
     } catch (error) {
         res.status(400).send(error);
     }

@@ -10,7 +10,10 @@ router.post('/login', authController.login);
 router.post('/createLoan', loanController.createLoan);
 router.delete('/deleteLoan/:id', loanController.deleteLoan);
 router.get('/getLoansByLender', loanController.getLoansByLender);
-router.get('/getLoansByBorrower', loanController.getLoansByBorrower);;
+router.get('/getLoansByBorrower', loanController.getLoansByBorrower);
+router.get('/getLoanById/:loanID', loanController.getLoanById);
+router.get('/getLender/:walletAddress', loanController.getLender);
+router.get('/getBorrower/:walletAddress', loanController.getBorrower);
 
 router.get('/', homeController.home);
 

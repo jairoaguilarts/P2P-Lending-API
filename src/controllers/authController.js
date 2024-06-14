@@ -29,6 +29,7 @@ exports.registerUser = async (req, res) => {
       lastName,
       email,
       walletAddress,
+      creditScore: 0,
       createdAt: new Date(),
     };
 
