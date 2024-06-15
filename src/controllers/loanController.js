@@ -21,7 +21,8 @@ exports.createLoan = async (req, res) => {
             borrower: loanData.borrower || null,
             isFunded: loanData.isFunded || false,
             isRepaid: loanData.isRepaid || false,
-            createdAt: new Date()
+            createdAt: new Date(),
+            createdBy: loanData.createdBy || 'unknown' // Nuevo campo agregado
         };
 
         await loansCollection.insertOne(newLoan);
@@ -31,6 +32,7 @@ exports.createLoan = async (req, res) => {
         res.status(400).send({ message: 'Error creating loan offer', error: error.message });
     }
 };
+
 
 exports.deleteLoan = async (req, res) => {
     const loanID = parseInt(req.params.id, 10);
