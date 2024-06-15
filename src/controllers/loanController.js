@@ -152,7 +152,7 @@ exports.asignarLender = async (req, res) => {
         const result = await loansCollection.findOneAndUpdate(
             { loanID: loanID },
             { $set: { lender: lender } },
-            { returnOriginal: false }
+            { returnOriginal: false, returnDocument: 'after' }
         );
 
         if (result.lender === lender) {
@@ -181,7 +181,7 @@ exports.asignarBorrower = async (req, res) => {
         const result = await loansCollection.findOneAndUpdate(
             { loanID: loanID },
             { $set: { borrower: borrower } },
-            { returnOriginal: false }
+            { returnOriginal: false, returnDocument: 'after' }
         );
 
         if (result.borrower === borrower) {
