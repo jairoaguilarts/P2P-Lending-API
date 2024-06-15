@@ -141,7 +141,7 @@ exports.getBorrower = async (req, res) => {
 exports.asignarLender = async (req, res) => {
     const { loanID, lender } = req.body;
 
-    if (!loanID || !lender) {
+    if (loanID === undefined || loanID === null || !lender) {
         return res.status(400).send({ message: 'loanID y lender son requeridos' });
     }
 
@@ -157,12 +157,14 @@ exports.asignarLender = async (req, res) => {
             { returnOriginal: false, returnDocument: 'after' }
         );
 
-        if (result.lender === lender) {
+        // Verificar si el prestamista fue asignado correctamente
+        if (result && result.lender === lender) {
             res.status(200).send({ message: 'Prestamista asignado correctamente' });
         } else {
             res.status(404).send({ message: 'Préstamo no encontrado' });
         }
     } catch (error) {
+        console.log('Error:', error);
         res.status(400).send({ message: 'Error updating loan', error: error.message });
     }
 };
@@ -170,7 +172,7 @@ exports.asignarLender = async (req, res) => {
 exports.asignarBorrower = async (req, res) => {
     const { loanID, borrower } = req.body;
 
-    if (!loanID || !borrower) {
+    if (loanID === undefined || loanID === null || !borrower) {
         return res.status(400).send({ message: 'loanID y lender son requeridos' });
     }
 
@@ -186,7 +188,7 @@ exports.asignarBorrower = async (req, res) => {
             { returnOriginal: false, returnDocument: 'after' }
         );
 
-        if (result.borrower === borrower) {
+        if (result && result.borrower === borrower) {
             res.status(200).send({ message: 'Prestamista asignado correctamente' });
         } else {
             res.status(404).send({ message: 'Préstamo no encontrado' });
