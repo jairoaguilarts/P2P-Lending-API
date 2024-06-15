@@ -135,3 +135,61 @@ exports.getBorrower = async (req, res) => {
         res.status(400).send(error);
     }
 };
+
+exports.asignarLender = async (req, res) => {
+    const { loanID, lender } = req.body;
+
+    if (!loanID || !lender) {
+        return res.status(400).send({ message: 'loanID y lender son requeridos' });
+    }
+
+    try {
+        // Conectar a la base de datos de MongoDB
+        const database = client.db('microfinance-P2P');
+        const loansCollection = database.collection('loans');
+
+        // Encontrar el préstamo por loanID y actualizar el campo lender
+        const result = await loansCollection.findOneAndUpdate(
+            { loanID: loanID },
+            { $set: { lender: lender } },
+            { returnOriginal: false }
+        );
+
+        if (result.lender === lender) {
+            res.status(200).send({ message: 'Prestamista asignado correctamente' });
+        } else {
+            res.status(404).send({ message: 'Préstamo no encontrado' });
+        }
+    } catch (error) {
+        res.status(400).send({ message: 'Error updating loan', error: error.message });
+    }
+};
+
+exports.asignarBorrower = async (req, res) => {
+    const { loanID, borrower } = req.body;
+
+    if (!loanID || !borrower) {
+        return res.status(400).send({ message: 'loanID y lender son requeridos' });
+    }
+
+    try {
+        // Conectar a la base de datos de MongoDB
+        const database = client.db('microfinance-P2P');
+        const loansCollection = database.collection('loans');
+
+        // Encontrar el préstamo por loanID y actualizar el campo lender
+        const result = await loansCollection.findOneAndUpdate(
+            { loanID: loanID },
+            { $set: { borrower: borrower } },
+            { returnOriginal: false }
+        );
+
+        if (result.borrower === borrower) {
+            res.status(200).send({ message: 'Prestamista asignado correctamente' });
+        } else {
+            res.status(404).send({ message: 'Préstamo no encontrado' });
+        }
+    } catch (error) {
+        res.status(400).send({ message: 'Error updating loan', error: error.message });
+    }
+};
