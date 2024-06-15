@@ -16,6 +16,7 @@ router.get('/getLender/:walletAddress', loanController.getLender);
 router.get('/getBorrower/:walletAddress', loanController.getBorrower);
 router.put('/asignarLender', loanController.asignarLender);
 router.put('/asignarBorrower', loanController.asignarBorrower);
+router.put('/actualizarStatus', loanController.actualizarStatus);
 
 router.get('/', homeController.home);
 

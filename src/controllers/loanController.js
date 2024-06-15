@@ -16,13 +16,13 @@ exports.createLoan = async (req, res) => {
             amount: loanData.amount,
             interestRate: loanData.interestRate,
             duration: loanData.duration,
-            status: 'Pending',
+            status: 'Pendiente',
             lender: loanData.lender || null,
             borrower: loanData.borrower || null,
             isFunded: loanData.isFunded || false,
             isRepaid: loanData.isRepaid || false,
             createdAt: new Date(),
-            createdBy: loanData.createdBy || 'unknown' // Nuevo campo agregado
+            createdBy: loanData.createdBy || 'unknown'
         };
 
         await loansCollection.insertOne(newLoan);
@@ -195,3 +195,39 @@ exports.asignarBorrower = async (req, res) => {
         res.status(400).send({ message: 'Error updating loan', error: error.message });
     }
 };
+
+exports.actualizarStatus = async (req, res) => {
+    const { loanID, isFunded, isRepaid, status } = req.body;
+
+    if (!loanID) {
+        return res.status(400).send({ message: 'loanID es requerido' });
+    }
+
+    try {
+        // Conectar a la base de datos de MongoDB
+        const database = client.db('microfinance-P2P');
+        const loansCollection = database.collection('loans');
+
+        // Crear un objeto de actualización
+        const updateFields = {};
+        if (typeof isFunded !== 'undefined') updateFields.isFunded = isFunded;
+        if (typeof isRepaid !== 'undefined') updateFields.isRepaid = isRepaid;
+        if (typeof status !== 'undefined') updateFields.status = status;
+
+        // Encontrar el préstamo por loanID y actualizar los campos proporcionados
+        const result = await loansCollection.findOneAndUpdate(
+            { loanID: loanID },
+            { $set: updateFields },
+            { returnOriginal: false, returnDocument: 'after' }
+        );
+
+        if (result.value) {
+            res.status(200).send({ message: 'Estado del préstamo actualizado correctamente', loan: result.value });
+        } else {
+            res.status(404).send({ message: 'Préstamo no encontrado' });
+        }
+    } catch (error) {
+        res.status(400).send({ message: 'Error updating loan', error: error.message });
+    }
+};
+
