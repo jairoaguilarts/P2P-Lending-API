@@ -201,7 +201,7 @@ exports.asignarBorrower = async (req, res) => {
 exports.actualizarStatus = async (req, res) => {
     const { loanID, isFunded, isRepaid, status } = req.body;
 
-    if (!loanID) {
+    if (loanID === undefined || loanID === null) {
         return res.status(400).send({ message: 'loanID es requerido' });
     }
 
