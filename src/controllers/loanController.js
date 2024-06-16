@@ -22,6 +22,7 @@ exports.createLoan = async (req, res) => {
             isFunded: loanData.isFunded || false,
             isRepaid: loanData.isRepaid || false,
             createdAt: new Date(),
+            createdBy: loanData.createdBy || 'unknown'
         };
 
         await loansCollection.insertOne(newLoan);
