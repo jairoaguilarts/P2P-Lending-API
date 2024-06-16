@@ -22,7 +22,6 @@ exports.createLoan = async (req, res) => {
             isFunded: loanData.isFunded || false,
             isRepaid: loanData.isRepaid || false,
             createdAt: new Date(),
-            createdBy: loanData.createdBy || 'unknown'
         };
 
         await loansCollection.insertOne(newLoan);
@@ -223,7 +222,7 @@ exports.actualizarStatus = async (req, res) => {
             { returnOriginal: false, returnDocument: 'after' }
         );
 
-        if (result.value) {
+        if (result) {
             res.status(200).send({ message: 'Estado del préstamo actualizado correctamente', loan: result.value });
         } else {
             res.status(404).send({ message: 'Préstamo no encontrado' });
